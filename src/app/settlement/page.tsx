@@ -1,0 +1,107 @@
+import type { Metadata } from "next";
+import {
+  ContentPageShell,
+  DocFooterNav,
+  DocHero,
+  DocNavLink,
+  DocSection,
+} from "@/components/ui/content-page";
+
+export const metadata: Metadata = {
+  title: "Settlement · Umbra Pay Links",
+  description:
+    "Exact Umbra SDK surface: receiver-claimable UTXO, ZK prover, confirm path, and production hardening.",
+};
+
+export default function SettlementPage() {
+  return (
+    <ContentPageShell>
+      <DocHero
+        eyebrow="Umbra"
+        eyebrowTone="teal"
+        title="Settlement"
+        description="This product does not abstract Umbra away behind a generic “payment provider.” The SDK is the settlement engine in both browser and Node paths; the server only records intent state, optional RPC checks, and webhooks."
+      />
+
+      <DocSection title="SDK calls (browser checkout)">
+        <p>
+          The pay page wires these in order — there is no alternate SPL-only fast path:
+        </p>
+        <dl className="space-y-3 text-xs sm:text-sm">
+          <div>
+            <dt className="font-mono font-semibold text-teal">createSignerFromWalletAccount</dt>
+            <dd className="mt-1">
+              Wallet Standard wallet → Umbra-compatible signer (same entry point as Umbra
+              quickstart).
+            </dd>
+          </div>
+          <div>
+            <dt className="font-mono font-semibold text-teal">getUmbraClient</dt>
+            <dd className="mt-1">
+              Network, RPC HTTP + WebSocket subscriptions, Umbra indexer — required for
+              proofs and state.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-mono font-semibold text-teal">getUserAccountQuerierFunction</dt>
+            <dd className="mt-1">Skip redundant registration when the payer already exists.</dd>
+          </div>
+          <div>
+            <dt className="font-mono font-semibold text-teal">getUserRegistrationFunction</dt>
+            <dd className="mt-1">First-time Umbra identity (costs SOL) when needed.</dd>
+          </div>
+          <div>
+            <dt className="font-mono font-semibold text-teal">
+              getPublicBalanceToReceiverClaimableUtxoCreatorFunction
+            </dt>
+            <dd className="mt-1">
+              Core value move: public SPL USDC → receiver-claimable UTXO toward the merchant
+              address on the intent, using{" "}
+              <code className="text-ink">getCreateReceiverClaimableUtxoFromPublicBalanceProver</code>{" "}
+              from <code className="text-ink">@umbra-privacy/web-zk-prover</code>.
+            </dd>
+          </div>
+        </dl>
+      </DocSection>
+
+      <DocSection title="SDK calls (headless agent)">
+        <p>
+          <code>scripts/agent-pay.mjs</code> mirrors the browser stack with{" "}
+          <code>createSignerFromPrivateKeyBytes</code> and the same UTXO creator + prover,
+          so headless automation exercises the same Umbra pipeline as the browser, with a
+          different signer only.
+        </p>
+      </DocSection>
+
+      <DocSection title="Confirm and verification">
+        <p>
+          After UTXO creation, the client POSTs Solana transaction signatures to{" "}
+          <code>/api/intents/&lt;id&gt;/confirm</code>. For demos, confirmation can proceed
+          without landed txs. For production-like runs, set{" "}
+          <code>REQUIRE_ONCHAIN_CONFIRM_FOR_SETTLE=true</code> so the server calls{" "}
+          <code>getSignatureStatuses</code> on your RPC before marking the intent settled.
+        </p>
+      </DocSection>
+
+      <DocSection title="Merchant prerequisites">
+        <p>
+          The merchant address must be able to use Umbra as a recipient (registered, able
+          to scan and claim UTXOs per SDK docs). If the recipient is not set up, payer
+          flows can fail — an operational constraint this UI does not hide.
+        </p>
+      </DocSection>
+
+      <DocFooterNav>
+        <DocNavLink href="/agents">Agents &amp; APIs</DocNavLink>
+        <span className="text-line-strong" aria-hidden>
+          ·
+        </span>
+        <DocNavLink href="/how-it-works">How it works</DocNavLink>
+        <span className="text-line-strong" aria-hidden>
+          ·
+        </span>
+        <DocNavLink href="/demo">Demo center</DocNavLink>
+      </DocFooterNav>
+    </ContentPageShell>
+  );
+}

@@ -1,0 +1,236 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Umbra Private Pay Links API",
+    "version": "0.1.0",
+    "description": "Payment intents with human checkout URLs and x402-shaped gated resources. Settlement uses Umbra (receiver-claimable UTXO); see `extra.settlement` on 402 responses."
+  },
+  "servers": [{ "url": "/", "description": "Same origin as the app (use NEXT_PUBLIC_APP_URL in production)" }],
+  "paths": {
+    "/api/intents": {
+      "post": {
+        "summary": "Create payment intent",
+        "operationId": "createIntent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["merchantAddress", "amountUsdc"],
+                "properties": {
+                  "label": { "type": "string", "description": "Display label for checkout", "default": "Payment" },
+                  "amountUsdc": { "type": "string", "description": "Decimal USDC amount (e.g. \"1.5\")" },
+                  "merchantAddress": { "type": "string", "description": "Solana address (base58) receiving the Umbra flow" },
+                  "mint": { "type": "string", "description": "SPL mint; defaults to configured USDC" },
+                  "webhookUrl": { "type": "string", "format": "uri", "description": "Optional http(s) URL for POST intent.settled after first settlement" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Intent created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "intent": { "$ref": "#/components/schemas/IntentSummary" },
+                    "payUrl": { "type": "string", "format": "uri" },
+                    "agentResourceUrl": { "type": "string", "format": "uri" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Validation error" },
+          "429": { "description": "Rate limited (20 POSTs / minute / client IP)" }
+        }
+      }
+    },
+    "/api/intents/{id}": {
+      "get": {
+        "summary": "Public intent metadata (checkout UI)",
+        "operationId": "getIntent",
+        "parameters": [{ "$ref": "#/components/parameters/intentId" }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/IntentPublic" }
+              }
+            }
+          },
+          "404": { "description": "Not found" }
+        }
+      }
+    },
+    "/api/intents/{id}/confirm": {
+      "post": {
+        "summary": "Record settlement (signatures from Umbra UTXO flow)",
+        "operationId": "confirmIntent",
+        "parameters": [{ "$ref": "#/components/parameters/intentId" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["signatures"],
+                "properties": {
+                  "signatures": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Solana transaction signatures from the Umbra settlement steps"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settled or idempotent replay with same signatures",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "intent": { "$ref": "#/components/schemas/IntentSettled" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Bad body, failed on-chain verify (if REQUIRE_ONCHAIN_CONFIRM_FOR_SETTLE), or RPC error" },
+          "404": { "description": "Intent not found" },
+          "409": { "description": "Already settled with different signatures" },
+          "429": { "description": "Rate limited (30 / minute / client IP)" }
+        }
+      }
+    },
+    "/api/resources/{id}": {
+      "get": {
+        "summary": "Gated resource (402 until paid, then 200)",
+        "operationId": "getResource",
+        "parameters": [{ "$ref": "#/components/parameters/intentId" }],
+        "responses": {
+          "200": {
+            "description": "Unlocked payload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "unlocked": { "type": "boolean" },
+                    "intentId": { "type": "string", "format": "uuid" },
+                    "label": { "type": "string" },
+                    "message": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required (x402-shaped)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/X402PaymentRequired" }
+              }
+            }
+          },
+          "404": { "description": "Intent not found" },
+          "429": { "description": "Rate limited (120 GETs / minute / client IP)" }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "intentId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "string", "format": "uuid" }
+      }
+    },
+    "schemas": {
+      "IntentSummary": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "label": { "type": "string" },
+          "amountAtomic": { "type": "string" },
+          "mint": { "type": "string" },
+          "status": { "type": "string", "enum": ["open", "settled"] },
+          "createdAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "IntentPublic": {
+        "allOf": [
+          { "$ref": "#/components/schemas/IntentSummary" },
+          {
+            "type": "object",
+            "properties": {
+              "merchantAddress": { "type": "string" }
+            }
+          }
+        ]
+      },
+      "IntentSettled": {
+        "allOf": [
+          { "$ref": "#/components/schemas/IntentPublic" },
+          {
+            "type": "object",
+            "properties": {
+              "settlementSignatures": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        ]
+      },
+      "X402PaymentRequired": {
+        "type": "object",
+        "properties": {
+          "x402Version": { "type": "integer" },
+          "error": { "type": "string" },
+          "accepts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "scheme": { "type": "string" },
+                "network": { "type": "string" },
+                "maxAmountRequired": { "type": "string" },
+                "resource": { "type": "string" },
+                "description": { "type": "string" },
+                "payTo": { "type": "string" },
+                "maxTimeoutSeconds": { "type": "integer" },
+                "asset": { "type": "string" },
+                "mimeType": { "type": "string" },
+                "outputSchema": { "nullable": true },
+                "extra": {
+                  "type": "object",
+                  "description": "Umbra-specific settlement hints",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "settlement": { "type": "string", "example": "umbra-receiver-claimable-utxo" },
+                    "intentId": { "type": "string" },
+                    "mint": { "type": "string" },
+                    "amountAtomic": { "type": "string" },
+                    "merchantAddress": { "type": "string" },
+                    "humanPayUrl": { "type": "string" },
+                    "confirmUrl": { "type": "string" },
+                    "docs": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
