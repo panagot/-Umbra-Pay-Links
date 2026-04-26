@@ -8,6 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:smoke": "node scripts/smoke-http.mjs",
+    "test:all": "npm run test:unit && npm run test:e2e",
     "agent:pay": "node scripts/agent-pay.mjs"
   },
   "dependencies": {
@@ -30,6 +34,7 @@
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "@playwright/test": "^1.55.0"
   }
 }

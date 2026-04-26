@@ -27,8 +27,8 @@ export default function Home() {
         }
         description={
           <>
-            Create a payment intent, share a human checkout URL, and expose the same
-            bill to machines via an{" "}
+            Create a payment intent, share a human checkout URL, and expose the same bill
+            to machines via an{" "}
             <span className="inline-flex items-center gap-1 font-medium text-ink">
               HTTP 402
               <InfoTip
@@ -43,8 +43,7 @@ export default function Home() {
               />
             </span>{" "}
             resource. Settlement uses the Umbra SDK (receiver-claimable UTXO in this
-            build). Built for merchants, SaaS checkouts, and agent builders who want one
-            intent record for both audiences.
+            build).
           </>
         }
         actions={
@@ -58,38 +57,6 @@ export default function Home() {
           </div>
         }
       />
-
-      <section
-        className="grid gap-4 sm:grid-cols-3"
-        aria-label="Why Umbra is central to this product"
-      >
-        {(
-          [
-            {
-              title: "Umbra is the product",
-              body: "There is no alternative settlement path. Checkout and the headless agent script both call the same Umbra APIs: client, registration, ZK prover, and receiver-claimable UTXO creation — not a decorative wrapper.",
-            },
-            {
-              title: "Privacy × automation",
-              body: "Confidential Umbra settlement pairs with an x402-shaped 402 resource so humans and machines settle the same invoice without exposing a public payment graph per payer.",
-            },
-            {
-              title: "Built to ship",
-              body: "Rate limits, optional on-chain confirm, webhooks, OpenAPI, and Vitest tests support real deployments — not a one-off demo only.",
-            },
-          ] as const
-        ).map((card) => (
-          <div
-            key={card.title}
-            className="rounded-2xl border border-line bg-panel p-4 shadow-sm ring-1 ring-ink/[0.02] sm:p-5"
-          >
-            <h2 className="text-sm font-semibold tracking-tight text-ink">{card.title}</h2>
-            <p className="mt-2 text-xs leading-relaxed text-muted sm:text-[13px]">
-              {card.body}
-            </p>
-          </div>
-        ))}
-      </section>
 
       <div className="max-w-xl">
         <CreateIntentForm />

@@ -12,8 +12,9 @@ import { CopyButton } from "@/components/ui/copy-button";
 import { InfoTip } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
-  title: "Checkout · Umbra Pay Links",
-  description: "Pay with Umbra for a shared intent — human wallet flow.",
+  title: "Private checkout · Umbra Pay Links",
+  description:
+    "Umbra SDK checkout — confidential USDC path toward merchant; same intent unlocks the agent 402 URL.",
 };
 
 type PageProps = { params: Promise<{ id: string }> };
@@ -38,9 +39,9 @@ export default async function PayPage({ params }: PageProps) {
       </div>
 
       <DocHero
-        eyebrow="Checkout"
+        eyebrow="Umbra settlement"
         title="Private checkout"
-        description="Everything below runs on Umbra’s SDK in your browser — Wallet Standard signer, indexer-backed client, and receiver-claimable UTXO creation. The agent URL on the right is the same bill for HTTP clients; one Umbra settlement unlocks both."
+        description="You’re paying through Umbra’s privacy infrastructure on Solana: Wallet Standard signer, Umbra client + indexer, ZK prover, and receiver-claimable UTXO creation from your public USDC. The agent URL on the right is the same obligation for software — one confidential settlement unlocks both."
       />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,18rem)] lg:items-start">

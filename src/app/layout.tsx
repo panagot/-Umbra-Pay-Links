@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Umbra Private Pay Links",
+  title: "Umbra Pay Links — private payments for people & agents",
   description:
-    "Confidential USDC checkout via Umbra SDK (receiver-claimable UTXO) plus the same bill for AI agents over HTTP 402 — one intent, two clients, Solana-native privacy.",
+    "Shareable payment links with Umbra confidential settlement and an x402-style 402 API for AI agents — Solana financial privacy without a public payer graph.",
 };
 
 export default function RootLayout({

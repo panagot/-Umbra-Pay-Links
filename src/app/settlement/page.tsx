@@ -20,7 +20,7 @@ export default function SettlementPage() {
         eyebrow="Umbra"
         eyebrowTone="teal"
         title="Settlement"
-        description="This product does not abstract Umbra away behind a generic “payment provider.” The SDK is the settlement engine in both browser and Node paths; the server only records intent state, optional RPC checks, and webhooks."
+        description="Umbra is Solana’s privacy infrastructure: confidential transfers, private balances, viewing keys for compliance, and more. This build focuses the SDK on a concrete product — receiver-claimable UTXOs from public USDC — so pay links and agents settle on real Umbra rails, not a mock."
       />
 
       <DocSection title="SDK calls (browser checkout)">
@@ -88,6 +88,16 @@ export default function SettlementPage() {
           The merchant address must be able to use Umbra as a recipient (registered, able
           to scan and claim UTXOs per SDK docs). If the recipient is not set up, payer
           flows can fail — an operational constraint this UI does not hide.
+        </p>
+      </DocSection>
+
+      <DocSection title="Where this could grow (Umbra roadmap)">
+        <p>
+          Umbra also supports <strong>viewing keys</strong>, selective disclosure, private
+          swaps, and deeper wallet experiences. This submission is intentionally narrow:
+          <strong> payment links + agent 402</strong> — but it sits on the same SDK and
+          network as those primitives, so payroll-style flows, richer compliance, or
+          shielded inventory could extend the same intent model later.
         </p>
       </DocSection>
 

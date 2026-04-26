@@ -1,68 +1,106 @@
 # Umbra Pay Links
 
-**Private pay links for people and software.**  
-Create one payment in the app and get two links: a normal **checkout page** for humans (wallet + Umbra), and a **machine-friendly URL** that apps and AI agents can call until the bill is paid—then it unlocks automatically.
+**Private payment links for humans and machines on Solana** — one intent, **Umbra-confidential settlement**, and an **x402-style HTTP 402** URL so software can pay the same bill without a custom integration.
 
-Built for the [Umbra Side Track](https://superteam.fun/earn/listing/umbra-side-track) on Solana.  
-**Repository:** [github.com/panagot/-Umbra-Pay-Links](https://github.com/panagot/-Umbra-Pay-Links)
-
----
-
-## In plain English
-
-### The problem it solves
-
-- **Creators and shops** want a “pay me” link without every payment being trivially traceable on a public ledger graph.
-- **Customers** want to pay in a familiar way: open a link, connect a wallet, confirm.
-- **Apps and AI agents** need a **standard web pattern**: “call this URL; if you’re not paid yet, you get a clear ‘payment required’ response; pay; call again and you get the content.”
-
-This project ties those together: **one payment record**, **private settlement through Umbra**, and **the same bill** whether the payer is a person or a bot.
-
-### What you get when you create a link
-
-1. **Human pay link** — Share it like any checkout URL. The payer opens it in the browser, connects a Solana wallet (e.g. Phantom), and pays with **Umbra** so funds move on a confidential path toward your merchant wallet.
-2. **Agent link** — The same payment, exposed as a web API. Before payment, it answers with **“payment required”** and structured instructions. After payment, it answers with **success** and a small JSON payload—so automation can “pay and retry” without a custom integration for every merchant.
-
-You only configure the amount, label, and **merchant Solana address** once.
-
-### Who it’s for
-
-| Audience | Why it matters |
-| -------- | -------------- |
-| **Solo creators & small teams** | One link for invoices, tips, or digital goods—plus optional webhook when someone pays. |
-| **Developers** | OpenAPI spec at `/openapi.json`, demo pages, and a sample script for headless payment. |
-| **Agent / AI builders** | Same URL before and after pay; status flips from “pay up” to “here’s your data” using familiar HTTP semantics. |
-
-### Try it locally
-
-1. Clone the repo and install dependencies: `npm install`
-2. (Optional) Copy `.env.example` to `.env.local` if you need custom RPC or network settings.
-3. Run `npm run dev` and open [http://localhost:3000](http://localhost:3000)
-4. Create a payment, open the **human pay link**, complete checkout, then hit the **agent link** again—you should see it unlock.
-
-**Wallet:** You need a **Wallet Standard** Solana wallet with transaction and message signing. The merchant address you enter must be able to receive Umbra flows (see in-app **Settlement** docs).
+| | |
+| --- | --- |
+| **Repository** | [github.com/panagot/-Umbra-Pay-Links](https://github.com/panagot/-Umbra-Pay-Links) |
+| **Live demo** | *Add your Vercel URL here after deploy* |
+| **Track** | [Umbra Side Track — Superteam](https://superteam.fun/earn/listing/umbra-side-track) |
 
 ---
 
-## Deploy on Vercel
+## The problem & who it’s for
 
-1. Push this repo to GitHub and **Import** the project in [Vercel](https://vercel.com/).
-2. Framework: **Next.js** (auto-detected). Build: `npm run build`, output default.
-3. In Vercel **Environment variables**, set at least **`NEXT_PUBLIC_APP_URL`** to your production URL (e.g. `https://your-project.vercel.app`) so generated pay links and API URLs are correct.
+**Problem:** “Pay me” on Solana usually means exposing a **public graph** of who paid whom and how much. **Solana Pay–style** flows and plain SPL transfers don’t give merchants or payers **transactional privacy**. At the same time, **AI agents and backends** need a **standard machine protocol** (not only a browser QR code).
 
-**Important:** This demo stores intents in a local **`data/`** file. On Vercel, serverless instances don’t give you durable disk the way a VPS does—treat hosted deploys as **demos**, or swap storage for a real database before serious use.
+**Who benefits**
 
-Do **not** commit `.env.local`, keypair JSON files, or live `data/*.json`—they are listed in `.gitignore`.
+| User | Use case |
+| ---- | -------- |
+| **Creators, shops, SaaS** | Invoices, tips, API access, digital goods — **shareable links** where the **merchant address is not in the URL** (opaque id only). |
+| **Payers** | Familiar flow: open link → wallet → pay; value moves on **Umbra’s confidential rails** toward the merchant. |
+| **Agent & platform builders** | **X402 private payments**: one **GET** returns **402 + JSON** until Umbra settlement is recorded, then **200** — same pattern as emerging x402 tooling, with **Umbra underneath**, not a naive “send to `payTo`” instruction. |
 
 ---
 
-## Technical details (short)
+## How this uses the **Umbra SDK** (core integration)
 
-- **Settlement:** [Umbra SDK](https://sdk.umbraprivacy.com/quickstart) — receiver-claimable UTXO flow from public USDC balance, with ZK prover in the browser; headless path mirrors the same SDK calls in `scripts/agent-pay.mjs`.
-- **Agent protocol:** `GET /api/resources/<id>` returns **402** + x402-shaped JSON until paid, then **200**.
-- **Hardening:** Rate limits on API routes, optional on-chain signature check (`REQUIRE_ONCHAIN_CONFIRM_FOR_SETTLE` in `.env.example`), optional merchant webhooks, Vitest tests.
+This product **does not** replace Umbra with a server-side fake or a simple SPL transfer. **Settlement is the Umbra SDK end-to-end.**
 
-More depth: use the in-app guides (**How it works**, **Settlement**, **Agents & APIs**) and the [x402 response format](https://docs.g402.ai/docs/api/response-format) concept doc.
+**Packages:** `@umbra-privacy/sdk`, `@umbra-privacy/web-zk-prover`, Wallet Standard (`@wallet-standard/*`), `@solana/kit` for typed addresses.
+
+**Browser checkout (`PayWithUmbra`) — in order:**
+
+1. `createSignerFromWalletAccount` — Wallet Standard → Umbra signer  
+2. `getUmbraClient` — network, RPC, WebSocket subscriptions, Umbra indexer  
+3. `getUserAccountQuerierFunction` / `getUserRegistrationFunction` — Umbra identity when needed  
+4. `getPublicBalanceToReceiverClaimableUtxoCreatorFunction` + `getCreateReceiverClaimableUtxoFromPublicBalanceProver` — **public USDC → receiver-claimable UTXO** toward the merchant (confidential settlement path)
+
+**Headless automation (`scripts/agent-pay.mjs`):** same pipeline with `createSignerFromPrivateKeyBytes` — **proves parity** for machine payers.
+
+**App server:** stores intents, serves **402** resources, optional **`getSignatureStatuses`** gate (`REQUIRE_ONCHAIN_CONFIRM_FOR_SETTLE`), webhooks. **Umbra’s programs** are invoked **through the SDK** from the client; this repo does not ship a separate on-chain program ID.
+
+**Further Umbra primitives (roadmap-friendly):** viewing keys, selective disclosure, and private swaps are part of Umbra’s broader stack — this prototype focuses on **private pay links + x402-shaped agent access**, which maps directly to the track’s *Private Payments* and *X402 Private Payments* prompts.
+
+---
+
+## What you get in the app
+
+1. **Human pay link** — `/pay/<id>`: wallet + Umbra checkout.  
+2. **Agent resource link** — `/api/resources/<id>`: **402** until paid, then **200** + JSON.  
+3. Optional **webhook** on first settlement.  
+4. In-app **How it works**, **Settlement**, **Agents & APIs**, and **Demo center** (simulations + link to live flow).
+
+---
+
+## Build, test, and run
+
+```bash
+npm install
+cp .env.example .env.local   # optional
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000): create an intent → open the **pay link** (wallet + Umbra) → call the **resource URL** again (or use `npm run agent:pay` with a funded keypair — see `.env.example` and script header).
+
+**Tests**
+
+| Command | Purpose |
+| ------- | ------- |
+| `npm run test` / `npm run test:unit` | Vitest — helpers for rate limits + RPC verify |
+| `npm run test:e2e` | Playwright — all main pages + OpenAPI + intent → pay → **402** |
+| `npm run test:smoke` | Quick `fetch` smoke (needs server on `BASE_URL`) |
+| `npm run test:all` | Unit + E2E |
+
+First-time Playwright: `npx playwright install chromium`
+
+---
+
+## Deploy (e.g. Vercel)
+
+1. Import the GitHub repo in [Vercel](https://vercel.com/).  
+2. Set **`NEXT_PUBLIC_APP_URL`** to your production URL so generated links are correct.  
+3. **File storage:** intents live in `data/` for this demo — **serverless disk is ephemeral**; use a database for production.
+
+---
+
+## Suggested demo video (under 5 minutes)
+
+1. **0:00–0:30** — Problem: public pay links vs need for **financial privacy** + **agents**.  
+2. **0:30–1:30** — **Demo center**: retail simulation, then **402 → pay → 200** timeline (no wallet).  
+3. **1:30–3:30** — **Live flow**: create intent → show **opaque id** vs merchant address → **pay with Umbra** (or show settlement step) → refresh **agent URL** → **200**.  
+4. **3:30–4:30** — **Code / SDK**: quick open of Settlement page or README — list **`getUmbraClient`** + **receiver-claimable UTXO** as the real move.  
+5. **4:30–5:00** — **Impact**: private payment links + **x402-compatible** agent surface on Solana.
+
+---
+
+## References
+
+- [Umbra SDK](https://sdk.umbraprivacy.com/) · [Quickstart](https://sdk.umbraprivacy.com/quickstart)  
+- [Umbra](https://umbraprivacy.com/) (product context)  
+- [x402 response format (concept)](https://docs.g402.ai/docs/api/response-format)  
+- OpenAPI in this app: `/openapi.json`
 
 ---
 

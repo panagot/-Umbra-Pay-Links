@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { DEMO_NAV_LINKS } from "@/components/demo/demo-anchors";
 import {
   VECTOR_STORE_BASE,
   useDemoCheckoutOptional,
@@ -316,35 +318,80 @@ export function PcStoreDemo() {
 
   return (
     <section className={`${cardWrap} overflow-hidden`}>
-      <div className="border-b border-teal-muted/25 bg-teal-deep px-5 py-6 text-panel sm:px-8 sm:py-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.35em] text-teal-muted">
-              Live demo · PC components
+      <div className="border-b border-teal-muted/25 bg-teal-deep px-4 py-4 text-panel sm:px-5 sm:py-4">
+        <div className="flex flex-col gap-3 border-b border-white/10 pb-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-4 sm:gap-y-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-snug text-panel/80">
+            <span className="rounded border border-panel/25 bg-white/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-teal-muted">
+              Demo
+            </span>
+            <span className="font-semibold text-panel">Demo center</span>
+            <span className="hidden text-panel/40 sm:inline" aria-hidden>
+              ·
+            </span>
+            <span className="max-w-[min(100%,28rem)]">
+              Simulated retail + agent 402 — no wallet or RPC here.
+            </span>
+            <InfoTip
+              label="About this page"
+              content={
+                <>
+                  Two stacked stories: build a cart and mint links, then the headless
+                  402 → Umbra → 200 path. All in-browser.
+                </>
+              }
+              triggerClassName={tipOnHero}
+            />
+            <Link
+              href="/"
+              className="font-semibold text-teal-muted underline decoration-teal-muted/50 underline-offset-2 hover:text-panel"
+            >
+              Live create →
+            </Link>
+          </div>
+          <nav
+            className="flex shrink-0 flex-wrap gap-1.5"
+            aria-label="Jump to demo sections"
+          >
+            {DEMO_NAV_LINKS.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="rounded-full border border-panel/35 bg-white/10 px-2.5 py-1 text-[10px] font-semibold text-panel transition hover:border-panel/60 hover:bg-white/15"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-teal-muted">
+              Part 1 · PC store
             </p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+            <h2 className="mt-1 text-xl font-bold tracking-tight sm:text-2xl">
               VECTOR SILICON
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-panel/80">
-              Add GPUs, RAM, drives, CPUs, PSUs, and cases. Checkout exposes a human
-              pay link and an agent resource URL for the same build. Run the full
-              automatic tour to see both paths back-to-back.
+            <p className="mt-1 max-w-2xl text-xs leading-snug text-panel/80 sm:text-[13px]">
+              Add parts, checkout mints human + agent URLs for the same build.{" "}
+              <strong className="font-medium text-panel">Run automatic simulation</strong>{" "}
+              walks human cart then agent pay back-to-back.
             </p>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => void runAutomaticDemo()}
               disabled={autoRunning}
-              className="rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-brand-hover disabled:opacity-50"
+              className="rounded-xl bg-brand px-3 py-2 text-sm font-semibold text-white shadow-md hover:bg-brand-hover disabled:opacity-50 sm:px-4 sm:py-2.5"
             >
-              {autoRunning ? "Running simulation…" : "Run automatic simulation"}
+              {autoRunning ? "Running…" : "Run automatic simulation"}
             </button>
             <button
               type="button"
               onClick={() => reset()}
               disabled={autoRunning}
-              className="rounded-xl border border-panel/40 bg-white/10 px-4 py-2.5 text-sm font-medium text-panel shadow-sm hover:bg-white/18 disabled:opacity-40"
+              className="rounded-xl border border-panel/40 bg-white/10 px-3 py-2 text-sm font-medium text-panel shadow-sm hover:bg-white/18 disabled:opacity-40 sm:px-4 sm:py-2.5"
             >
               Reset
             </button>

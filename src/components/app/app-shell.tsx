@@ -8,31 +8,31 @@ const NAV = [
   {
     href: "/",
     label: "Create link",
-    description: "New payment intent",
+    description: "Private pay + agent URL",
     icon: "create",
   },
   {
     href: "/demo",
-    label: "Live demos",
-    description: "Simulations · no wallet",
+    label: "Demo center",
+    description: "Recordable walkthrough",
     icon: "demo",
   },
   {
     href: "/how-it-works",
     label: "How it works",
-    description: "Intent · checkout · 402",
+    description: "Privacy · x402 · lifecycle",
     icon: "guide",
   },
   {
     href: "/settlement",
     label: "Settlement",
-    description: "Umbra path · confirm",
+    description: "SDK calls on Umbra",
     icon: "shield",
   },
   {
     href: "/agents",
     label: "Agents & APIs",
-    description: "Resources · script",
+    description: "402 resource · OpenAPI",
     icon: "agent",
   },
 ] as const;
@@ -202,7 +202,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex shrink-0 items-center gap-2 pr-4 lg:pr-6">
             <span className="hidden rounded-full border border-line bg-teal-soft/60 px-2.5 py-1 font-mono text-[10px] text-teal sm:inline">
-              Umbra SDK · HTTP 402
+              Umbra privacy layer · x402-ready
             </span>
           </div>
         </div>
@@ -251,8 +251,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="max-w-md space-y-2">
             <p className="text-sm font-semibold text-ink">Umbra Private Pay Links</p>
             <p className="text-xs leading-relaxed text-muted">
-              Shareable intents with confidential settlement — browser wallets and
-              autonomous clients meet the same Umbra-backed bill.
+              Financial privacy on Solana: one intent, Umbra SDK settlement, and an HTTP
+              402 surface for people and agents — aligned with the Umbra hackathon track.
             </p>
           </div>
           <div className="flex flex-wrap gap-x-10 gap-y-3 text-xs text-muted">
@@ -266,7 +266,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </li>
                 <li>
                   <Link href="/demo" className="hover:text-teal">
-                    Live demos
+                    Demo center
                   </Link>
                 </li>
                 <li>
@@ -302,6 +302,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <li>
                   <a
                     className="hover:text-teal"
+                    href="https://umbraprivacy.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Umbra
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="hover:text-teal"
                     href="https://docs.g402.ai/docs/api/response-format"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -314,7 +324,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="border-t border-line py-3.5 text-center text-[11px] text-faint">
-          Privacy-first payments on Solana
+          Umbra — move value on Solana without broadcasting your financial life
         </div>
       </footer>
     </div>

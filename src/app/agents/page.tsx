@@ -10,7 +10,7 @@ import {
 export const metadata: Metadata = {
   title: "Agents & APIs · Umbra Pay Links",
   description:
-    "Resource URL, HTTP 402 body, settlement extra fields, and the agent-pay script.",
+    "x402-style HTTP 402 resources, Umbra settlement extras, OpenAPI, and headless payer script.",
 };
 
 export default function AgentsPage() {
@@ -20,7 +20,7 @@ export default function AgentsPage() {
         eyebrow="Automation"
         eyebrowTone="teal"
         title="Agents & APIs"
-        description="Machine clients treat your intent as a gated HTTP resource, then settle with the same Umbra flow as humans — GET, 402, fund, retry."
+        description="Private machine-to-machine payments: agents poll one URL, receive standard 402 + JSON, run the same Umbra settlement as a human, then read the unlocked response. Fits the track’s “X402 private payments” direction without inventing a parallel protocol."
       />
 
       <DocSection title="Resource URL">
@@ -33,11 +33,11 @@ export default function AgentsPage() {
           <li>
             <strong>402</strong> while open — JSON includes <code>x402Version</code>,{" "}
             <code>accepts[]</code>, and <code>extra.settlement</code> ={" "}
-            <code>umbra-receiver-claimable-utxo</code> so clients know not to treat{" "}
-            <code>payTo</code> as a plain SPL send alone.
+            <code>umbra-receiver-claimable-utxo</code> so clients route work to the Umbra
+            SDK instead of treating <code>payTo</code> as a plain public SPL send.
           </li>
           <li>
-            <strong>200</strong> after the intent is marked settled.
+            <strong>200</strong> after the intent is marked settled (signatures recorded).
           </li>
         </ul>
       </DocSection>
@@ -45,8 +45,9 @@ export default function AgentsPage() {
       <DocSection title="Headless payer">
         <p>
           <code>npm run agent:pay</code> runs <code>scripts/agent-pay.mjs</code>: load a
-          keypair, read 402, run Umbra + UTXO create, POST confirm, re-fetch the resource.
-          Environment variables are documented in <code>README.md</code>.
+          keypair, read 402, run the same Umbra + UTXO path as the browser, POST confirm,
+          re-fetch the resource. Environment variables are in <code>README.md</code> and{" "}
+          <code>.env.example</code>.
         </p>
       </DocSection>
 
@@ -64,7 +65,8 @@ export default function AgentsPage() {
         <p>
           Machine-readable contract:{" "}
           <DocNavLink href="/openapi.json">/openapi.json</DocNavLink> (OpenAPI 3.1). Import
-          into Postman, Insomnia, or codegen tools.
+          into Postman, Insomnia, or codegen tools so your platform can treat intents as
+          first-class resources.
         </p>
       </DocSection>
 
@@ -105,6 +107,41 @@ export default function AgentsPage() {
             <dd className="mt-1">402 paywall or 200 when paid.</dd>
           </div>
         </dl>
+      </DocSection>
+
+      <DocSection title="Umbra documentation">
+        <ul className="list-inside list-disc space-y-2">
+          <li>
+            <a
+              className="font-medium text-teal hover:underline"
+              href="https://sdk.umbraprivacy.com/quickstart"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Umbra SDK quickstart
+            </a>
+          </li>
+          <li>
+            <a
+              className="font-medium text-teal hover:underline"
+              href="https://umbraprivacy.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Umbra (product)
+            </a>
+          </li>
+          <li>
+            <a
+              className="font-medium text-teal hover:underline"
+              href="https://docs.g402.ai/docs/api/response-format"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              x402 response format (reference)
+            </a>
+          </li>
+        </ul>
       </DocSection>
 
       <DocFooterNav>
