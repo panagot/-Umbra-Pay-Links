@@ -5,7 +5,7 @@ Private payment links for people and software on Solana. Each intent gets a huma
 | | |
 | --- | --- |
 | **Live app** | [umbra-pay-links.vercel.app](https://umbra-pay-links.vercel.app/) |
-| **Repository** | [github.com/panagot/-Umbra-Pay-Links](https://github.com/panagot/-Umbra-Pay-Links) |
+| **Repository** | [panagot/-Umbra-Pay-Links](https://github.com/panagot/-Umbra-Pay-Links) |
 | **Track** | [Umbra Side Track (Superteam)](https://superteam.fun/earn/listing/umbra-side-track) |
 
 ---
@@ -74,14 +74,6 @@ Open [http://localhost:3000](http://localhost:3000). Create an intent, complete 
 | `npm run test:all` | Unit + E2E |
 
 First-time Playwright: `npx playwright install chromium`
-
----
-
-## Deploy (e.g. Vercel)
-
-1. Import the GitHub repo in [Vercel](https://vercel.com/).  
-2. Set **`NEXT_PUBLIC_APP_URL`** to your production URL so generated links are correct.  
-3. **Storage:** this demo stores intents under `data/`. **Ephemeral disk on serverless** is not durable; use a database for production.
 
 ---
 
