@@ -34,6 +34,9 @@ export default function Home() {
             <Link href="/demo" className={pill}>
               Demo center →
             </Link>
+            <Link href="/demo/developer" className={pillGhost}>
+              Platform sim →
+            </Link>
             <Link href="/how-it-works" className={pillGhost}>
               How it works →
             </Link>
