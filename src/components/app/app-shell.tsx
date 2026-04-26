@@ -18,6 +18,12 @@ const NAV = [
     icon: "demo",
   },
   {
+    href: "/demo/developer",
+    label: "Platform sim",
+    description: "SaaS · terminal · webhooks",
+    icon: "platform",
+  },
+  {
     href: "/how-it-works",
     label: "How it works",
     description: "Privacy · x402 · lifecycle",
@@ -91,6 +97,12 @@ function NavIcon({ name }: { name: (typeof NAV)[number]["icon"] }) {
             d="M9 12h6m-6 4h6M9 8h2m4 0h2M7 4h10a2 2 0 0 1 2 2v14l-4-2-4 2-4-2-4 2V6a2 2 0 0 1 2-2z"
             {...stroke}
           />
+        </svg>
+      );
+    case "platform":
+      return (
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" aria-hidden>
+          <path d="M4 9h6M4 15h6M14 9l4 3-4 3M18 12h2" {...stroke} />
         </svg>
       );
     case "demo":
@@ -283,6 +295,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <li>
                   <Link href="/demo" className="hover:text-teal">
                     Demo center
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/demo/developer" className="hover:text-teal">
+                    Platform sim
                   </Link>
                 </li>
                 <li>

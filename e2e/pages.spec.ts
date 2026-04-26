@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 const staticPaths = [
   "/",
   "/demo",
+  "/demo/developer",
   "/how-it-works",
   "/settlement",
   "/agents",

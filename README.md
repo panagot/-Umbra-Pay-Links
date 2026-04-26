@@ -50,7 +50,7 @@ Viewing keys, selective disclosure, and private swaps are part of Umbra’s wide
 1. **Human pay link:** `/pay/<id>` (wallet checkout with Umbra).  
 2. **Agent resource:** `/api/resources/<id>` (**402** until paid, then **200** with JSON).  
 3. Optional **webhook** on first successful settlement.  
-4. **How it works**, **Settlement**, **Agents & APIs**, **Demo center**, and **Reference** (`/reference`: links and primary Umbra integration entry points).
+4. **How it works**, **Settlement**, **Agents & APIs**, **Demo center**, **Platform sim** (`/demo/developer`: SaaS credits, terminal 402→200, webhook inbox), and **Reference** (`/reference`).
 
 ---
 

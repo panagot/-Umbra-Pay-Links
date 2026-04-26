@@ -58,9 +58,9 @@ export function CreateIntentForm() {
     >
       <div className="flex items-start justify-between gap-4 border-b border-line/80 pb-4">
         <div>
-          <h2 className="text-lg font-semibold text-ink">New payment intent</h2>
+          <h1 className="text-lg font-semibold text-ink">New payment intent</h1>
           <p className="mt-1 text-sm text-muted">
-            One record → human URL + machine resource URL.
+            One record: human checkout URL and machine resource URL.
           </p>
         </div>
         <InfoTip
