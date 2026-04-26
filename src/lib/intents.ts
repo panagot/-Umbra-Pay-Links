@@ -17,6 +17,8 @@ export type PaymentIntent = {
   webhookUrl?: string;
   /** Populated after payer completes Umbra settlement (client-reported; verify in prod). */
   settlementSignatures?: string[];
+  /** ISO time when status became `settled` (set once on first confirm). */
+  settledAt?: string;
 };
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -95,6 +97,7 @@ export async function markSettled(
   }
   intent.status = "settled";
   intent.settlementSignatures = signatures;
+  intent.settledAt = new Date().toISOString();
   store.intents[idx] = intent;
   await writeStore(store);
   return { intent, alreadySettled: false };

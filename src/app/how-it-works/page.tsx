@@ -10,7 +10,7 @@ import {
 export const metadata: Metadata = {
   title: "How it works · Umbra Pay Links",
   description:
-    "Private payment links and x402-style agent payments on Umbra — intents, checkout, confidentiality, and HTTP 402.",
+    "Private payment links and x402-style agent payments on Umbra: intents, checkout, confidentiality, and HTTP 402.",
 };
 
 export default function HowItWorksPage() {
@@ -19,19 +19,19 @@ export default function HowItWorksPage() {
       <DocHero
         eyebrow="Product story"
         title="How it works"
-        description="Umbra’s mission is to move money on Solana without broadcasting everyone’s financial life. This app applies that to something people already understand: a payment link — plus the same obligation as a web resource agents can pay for."
+        description="Umbra exists so value can move on Solana without turning every counterparty into a public graph. Here that shows up as a pay link people already know how to use, plus one URL agents can poll the same way they would any other gated API."
       />
 
       <DocSection title="Mission fit (Umbra track)">
         <ul className="list-inside list-disc space-y-2">
           <li>
-            <strong className="text-ink">Private payment links</strong> — share a URL with
+            <strong className="text-ink">Private payment links</strong>: share a URL with
             an <strong>opaque id</strong>; your merchant pubkey is not in the path, and
             value settles through Umbra’s confidential machinery instead of a trivial
             public transfer row for every payer.
           </li>
           <li>
-            <strong className="text-ink">X402-style private machine payments</strong> — the
+            <strong className="text-ink">X402-style private machine payments</strong>: the
             agent URL speaks HTTP <code>402</code> + structured <code>accepts[]</code> until
             the Umbra flow completes, then <code>200</code>. Same mental model as emerging
             x402 clients; settlement is explicitly <code>umbra-receiver-claimable-utxo</code>{" "}
@@ -46,7 +46,7 @@ export default function HowItWorksPage() {
             When you submit the form on the home page, the app stores an{" "}
             <strong>intent</strong>: label, USDC amount, SPL mint, merchant Solana address,
             and status (<code>open</code> or <code>settled</code>). The public link only
-            contains an <strong>opaque id</strong> — not the merchant address in the path,
+            contains an <strong>opaque id</strong> (not the merchant address in the path),
             which reduces trivial link-scraping of “who earns here.”
           </p>
         </DocSection>
@@ -58,7 +58,7 @@ export default function HowItWorksPage() {
             needed, then{" "}
             <code>getPublicBalanceToReceiverClaimableUtxoCreatorFunction</code> so USDC
             moves through Umbra&apos;s receiver-claimable UTXO path toward the merchant you
-            configured — the same privacy primitives Umbra documents for builders.
+            configured. That uses the same privacy primitives Umbra documents for builders.
           </p>
         </DocSection>
       </div>
@@ -66,7 +66,7 @@ export default function HowItWorksPage() {
       <DocSection title="What payers see vs what chain observers see">
         <p>
           The checkout UI shows the <strong>amount and label</strong> so humans know what
-          they&apos;re paying — that&apos;s good UX. On-chain, Umbra separates{" "}
+          they&apos;re paying, which keeps checkout honest. On-chain, Umbra separates{" "}
           <strong>who paid whom from a trivial public graph</strong>: value commits into
           Umbra&apos;s structure toward the merchant&apos;s keys; claiming can land in
           private balances per Umbra&apos;s model. This prototype does not replace Umbra
@@ -106,7 +106,7 @@ export default function HowItWorksPage() {
         <ol className="list-inside list-decimal space-y-2 text-muted">
           <li>Create intent → copy human pay URL + agent resource URL.</li>
           <li>Human or agent settles via Umbra SDK; client POSTs signatures to confirm.</li>
-          <li>Resource GET flips from 402 to 200 — one id for CRM, webhooks, and ledgers.</li>
+          <li>Resource GET flips from 402 to 200. One id feeds CRM, webhooks, and ledgers.</li>
         </ol>
       </DocSection>
 

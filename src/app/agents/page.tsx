@@ -37,7 +37,9 @@ export default function AgentsPage() {
             SDK instead of treating <code>payTo</code> as a plain public SPL send.
           </li>
           <li>
-            <strong>200</strong> after the intent is marked settled (signatures recorded).
+            <strong>200</strong> after the intent is marked settled: JSON includes{" "}
+            <code>content</code> (<code>umbra-pay-links.unlocked</code>) as the unlocked
+            machine payload, plus <code>settledAt</code> and receipt fields.
           </li>
         </ul>
       </DocSection>

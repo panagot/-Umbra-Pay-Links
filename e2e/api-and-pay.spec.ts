@@ -67,4 +67,37 @@ test.describe("intent + pay + resource API", () => {
     });
     expect(res.status()).toBe(400);
   });
+
+  test("confirm then GET resource returns 200 with unlocked content", async ({
+    request,
+  }) => {
+    const post = await request.post("/api/intents", {
+      data: {
+        label: "Settled resource test",
+        amountUsdc: "0.01",
+        merchantAddress: TEST_MERCHANT,
+      },
+    });
+    expect(post.ok(), await post.text()).toBeTruthy();
+    const { intent } = (await post.json()) as { intent: { id: string } };
+    const { id } = intent;
+
+    const confirm = await request.post(`/api/intents/${id}/confirm`, {
+      data: { signatures: ["e2e-placeholder-sig"] },
+    });
+    expect(confirm.ok(), await confirm.text()).toBeTruthy();
+
+    const resource = await request.get(`/api/resources/${id}`);
+    expect(resource.status()).toBe(200);
+    const body = (await resource.json()) as {
+      unlocked: boolean;
+      content: { type: string; version: number; receipt: { settlement: string } };
+      settledAt?: string;
+    };
+    expect(body.unlocked).toBe(true);
+    expect(body.content.type).toBe("umbra-pay-links.unlocked");
+    expect(body.content.version).toBe(1);
+    expect(body.content.receipt.settlement).toBe("umbra-receiver-claimable-utxo");
+    expect(body.settledAt).toBeTruthy();
+  });
 });

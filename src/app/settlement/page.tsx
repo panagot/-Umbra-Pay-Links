@@ -20,12 +20,12 @@ export default function SettlementPage() {
         eyebrow="Umbra"
         eyebrowTone="teal"
         title="Settlement"
-        description="Umbra is Solana’s privacy infrastructure: confidential transfers, private balances, viewing keys for compliance, and more. This build focuses the SDK on a concrete product — receiver-claimable UTXOs from public USDC — so pay links and agents settle on real Umbra rails, not a mock."
+        description="Think of Umbra as Solana’s privacy layer: hidden amounts, shielded balances, viewing keys when you need audits, and more. This prototype zooms in on one flow the SDK already ships: pulling public USDC through a receiver-claimable UTXO so merchants get paid without us faking settlement in app code."
       />
 
       <DocSection title="SDK calls (browser checkout)">
         <p>
-          The pay page wires these in order — there is no alternate SPL-only fast path:
+          The pay page wires these in order. There is no alternate SPL-only fast path:
         </p>
         <dl className="space-y-3 text-xs sm:text-sm">
           <div>
@@ -38,8 +38,8 @@ export default function SettlementPage() {
           <div>
             <dt className="font-mono font-semibold text-teal">getUmbraClient</dt>
             <dd className="mt-1">
-              Network, RPC HTTP + WebSocket subscriptions, Umbra indexer — required for
-              proofs and state.
+              Network, RPC HTTP + WebSocket subscriptions, and Umbra indexer. All three are
+              required for proofs and state.
             </dd>
           </div>
           <div>
@@ -87,7 +87,7 @@ export default function SettlementPage() {
         <p>
           The merchant address must be able to use Umbra as a recipient (registered, able
           to scan and claim UTXOs per SDK docs). If the recipient is not set up, payer
-          flows can fail — an operational constraint this UI does not hide.
+          flows can fail. We call that out on purpose.
         </p>
       </DocSection>
 
@@ -95,7 +95,7 @@ export default function SettlementPage() {
         <p>
           Umbra also supports <strong>viewing keys</strong>, selective disclosure, private
           swaps, and deeper wallet experiences. This submission is intentionally narrow:
-          <strong> payment links + agent 402</strong> — but it sits on the same SDK and
+          <strong> payment links + agent 402</strong>, yet it sits on the same SDK and
           network as those primitives, so payroll-style flows, richer compliance, or
           shielded inventory could extend the same intent model later.
         </p>

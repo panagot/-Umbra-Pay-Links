@@ -26,12 +26,28 @@ export async function GET(req: Request, context: RouteContext) {
   }
 
   if (intent.status === "settled") {
+    const settledAt = intent.settledAt ?? intent.createdAt;
     return NextResponse.json({
       unlocked: true,
       intentId: intent.id,
       label: intent.label,
+      settledAt,
+      amountAtomic: intent.amountAtomic,
+      mint: intent.mint,
       message:
-        "Payment recorded. In production you would return the protected payload here.",
+        "Payment recorded. This JSON is the unlocked resource your agent was polling for.",
+      content: {
+        type: "umbra-pay-links.unlocked",
+        version: 1,
+        title: intent.label,
+        body:
+          "Access is granted for this intent. Downstream apps can treat this object as API output, a digital good descriptor, or a gate for further steps.",
+        receipt: {
+          settlement: "umbra-receiver-claimable-utxo",
+          amountAtomic: intent.amountAtomic,
+          mint: intent.mint,
+        },
+      },
     });
   }
 

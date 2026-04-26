@@ -119,16 +119,21 @@
         "parameters": [{ "$ref": "#/components/parameters/intentId" }],
         "responses": {
           "200": {
-            "description": "Unlocked payload",
+            "description": "Unlocked payload (machine-readable content after Umbra settlement)",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
+                  "required": ["unlocked", "intentId", "label", "content"],
                   "properties": {
-                    "unlocked": { "type": "boolean" },
+                    "unlocked": { "type": "boolean", "const": true },
                     "intentId": { "type": "string", "format": "uuid" },
                     "label": { "type": "string" },
-                    "message": { "type": "string" }
+                    "settledAt": { "type": "string", "format": "date-time", "description": "When marked settled (or createdAt for legacy rows)" },
+                    "amountAtomic": { "type": "string" },
+                    "mint": { "type": "string" },
+                    "message": { "type": "string" },
+                    "content": { "$ref": "#/components/schemas/UnlockedResourceContent" }
                   }
                 }
               }
@@ -186,10 +191,30 @@
           {
             "type": "object",
             "properties": {
+              "settledAt": { "type": "string", "format": "date-time" },
               "settlementSignatures": { "type": "array", "items": { "type": "string" } }
             }
           }
         ]
+      },
+      "UnlockedResourceContent": {
+        "type": "object",
+        "required": ["type", "version", "title", "body", "receipt"],
+        "properties": {
+          "type": { "type": "string", "const": "umbra-pay-links.unlocked" },
+          "version": { "type": "integer", "const": 1 },
+          "title": { "type": "string" },
+          "body": { "type": "string" },
+          "receipt": {
+            "type": "object",
+            "required": ["settlement", "amountAtomic", "mint"],
+            "properties": {
+              "settlement": { "type": "string", "example": "umbra-receiver-claimable-utxo" },
+              "amountAtomic": { "type": "string" },
+              "mint": { "type": "string" }
+            }
+          }
+        }
       },
       "X402PaymentRequired": {
         "type": "object",

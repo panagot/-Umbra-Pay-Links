@@ -82,7 +82,8 @@ First-time Playwright: `npx playwright install chromium`
 - [Umbra SDK](https://sdk.umbraprivacy.com/) · [Quickstart](https://sdk.umbraprivacy.com/quickstart)  
 - [Umbra](https://umbraprivacy.com/)  
 - [x402 response format (concept)](https://docs.g402.ai/docs/api/response-format)  
-- OpenAPI in this app: `/openapi.json`
+- OpenAPI in this app: `/openapi.json`  
+- Superteam submission checklist: [docs/SUBMISSION.md](docs/SUBMISSION.md)
 
 ---
 
