@@ -10,7 +10,7 @@ import {
 export const metadata: Metadata = {
   title: "Agents & APIs · Umbra Pay Links",
   description:
-    "x402-style HTTP 402 resources, Umbra settlement extras, OpenAPI, and headless payer script.",
+    "x402-shaped HTTP 402, extra.settlement for Umbra, unlocked JSON on 200, OpenAPI 3.1, and npm run agent:pay headless parity.",
 };
 
 export default function AgentsPage() {
@@ -20,7 +20,7 @@ export default function AgentsPage() {
         eyebrow="Automation"
         eyebrowTone="teal"
         title="Agents & APIs"
-        description="Private machine-to-machine payments: agents poll one URL, receive standard 402 + JSON, run the same Umbra settlement as a human, then read the unlocked response. Fits the track’s “X402 private payments” direction without inventing a parallel protocol."
+        description="Private machine-to-machine payments: agents poll one URL, receive standard 402 + JSON, run the same Umbra settlement as a human, then read the unlocked response with structured content. Matches the Umbra Side Track emphasis on x402-style private machine payments without inventing a parallel protocol."
       />
 
       <DocSection title="Resource URL">
@@ -29,9 +29,9 @@ export default function AgentsPage() {
             GET /api/resources/&lt;intent-id&gt;
           </code>
         </p>
-        <ul>
+        <ul className="list-inside list-disc space-y-2">
           <li>
-            <strong>402</strong> while open — JSON includes <code>x402Version</code>,{" "}
+            <strong>402</strong> while open: JSON includes <code>x402Version</code>,{" "}
             <code>accepts[]</code>, and <code>extra.settlement</code> ={" "}
             <code>umbra-receiver-claimable-utxo</code> so clients route work to the Umbra
             SDK instead of treating <code>payTo</code> as a plain public SPL send.
@@ -42,6 +42,36 @@ export default function AgentsPage() {
             machine payload, plus <code>settledAt</code> and receipt fields.
           </li>
         </ul>
+      </DocSection>
+
+      <DocSection title="Example 200 body (shape)">
+        <p className="mb-3 text-sm text-muted">
+          Abbreviated; see <DocNavLink href="/openapi.json">OpenAPI</DocNavLink> for full
+          fields. <code>settledAt</code> is written on first confirm; older rows may fall
+          back to <code>createdAt</code> in the resource response only when needed.
+        </p>
+        <pre className="overflow-x-auto rounded-xl border border-line bg-canvas/80 p-4 text-[11px] leading-relaxed text-ink sm:text-xs">
+          {`{
+  "unlocked": true,
+  "intentId": "…",
+  "label": "Invoice / product name",
+  "settledAt": "2026-04-24T12:00:00.000Z",
+  "amountAtomic": "1000000",
+  "mint": "EPjF…",
+  "message": "Payment recorded. This JSON is the unlocked resource…",
+  "content": {
+    "type": "umbra-pay-links.unlocked",
+    "version": 1,
+    "title": "Invoice / product name",
+    "body": "Access is granted for this intent…",
+    "receipt": {
+      "settlement": "umbra-receiver-claimable-utxo",
+      "amountAtomic": "1000000",
+      "mint": "EPjF…"
+    }
+  }
+}`}
+        </pre>
       </DocSection>
 
       <DocSection title="Headless payer">
@@ -58,7 +88,7 @@ export default function AgentsPage() {
           Both paths call <code>getUmbraClient</code>, optional registration, then{" "}
           <code>getPublicBalanceToReceiverClaimableUtxoCreatorFunction</code> with the same
           browser ZK prover package. The only deliberate difference is the signer: Wallet
-          Standard in React vs private key bytes in Node — same settlement path, not a
+          Standard in React vs private key bytes in Node. Same settlement path, not a
           server-side fake payment.
         </p>
       </DocSection>
@@ -147,6 +177,10 @@ export default function AgentsPage() {
       </DocSection>
 
       <DocFooterNav>
+        <DocNavLink href="/judges">For reviewers</DocNavLink>
+        <span className="text-line-strong" aria-hidden>
+          ·
+        </span>
         <DocNavLink href="/settlement">Settlement details</DocNavLink>
         <span className="text-line-strong" aria-hidden>
           ·

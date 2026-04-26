@@ -35,6 +35,12 @@ const NAV = [
     description: "402 resource · OpenAPI",
     icon: "agent",
   },
+  {
+    href: "/judges",
+    label: "For reviewers",
+    description: "Links · checklist · Umbra proof",
+    icon: "judge",
+  },
 ] as const;
 
 function NavIcon({ name }: { name: (typeof NAV)[number]["icon"] }) {
@@ -76,6 +82,15 @@ function NavIcon({ name }: { name: (typeof NAV)[number]["icon"] }) {
           />
           <circle cx="9" cy="15" r="1" fill="currentColor" />
           <circle cx="15" cy="15" r="1" fill="currentColor" />
+        </svg>
+      );
+    case "judge":
+      return (
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" aria-hidden>
+          <path
+            d="M9 12h6m-6 4h6M9 8h2m4 0h2M7 4h10a2 2 0 0 1 2 2v14l-4-2-4 2-4-2-4 2V6a2 2 0 0 1 2-2z"
+            {...stroke}
+          />
         </svg>
       );
     case "demo":
@@ -251,8 +266,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="max-w-md space-y-2">
             <p className="text-sm font-semibold text-ink">Umbra Private Pay Links</p>
             <p className="text-xs leading-relaxed text-muted">
-              Financial privacy on Solana: one intent, Umbra SDK settlement, and an HTTP
-              402 surface for people and agents — aligned with the Umbra hackathon track.
+              Financial privacy on Solana: one intent, Umbra SDK settlement, and an HTTP 402
+              surface for people and agents. Built for the Umbra Side Track (Superteam
+              Frontier).
             </p>
           </div>
           <div className="flex flex-wrap gap-x-10 gap-y-3 text-xs text-muted">
@@ -284,11 +300,46 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     Agents &amp; APIs
                   </Link>
                 </li>
+                <li>
+                  <Link href="/judges" className="hover:text-teal">
+                    For reviewers
+                  </Link>
+                </li>
               </ul>
             </div>
             <div className="space-y-2">
               <p className="font-medium text-ink">External</p>
               <ul className="space-y-1.5">
+                <li>
+                  <a
+                    className="hover:text-teal"
+                    href="https://superteam.fun/earn/listing/umbra-side-track"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Superteam listing
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="hover:text-teal"
+                    href="https://github.com/panagot/Umbra-Pay-Links"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    GitHub repo
+                  </a>
+                </li>
+                <li>
+                  <a
+                    className="hover:text-teal"
+                    href="https://github.com/panagot/Umbra-Pay-Links/blob/main/docs/SUBMISSION.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Submission checklist
+                  </a>
+                </li>
                 <li>
                   <a
                     className="hover:text-teal"
@@ -324,7 +375,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="border-t border-line py-3.5 text-center text-[11px] text-faint">
-          Umbra — move value on Solana without broadcasting your financial life
+          Umbra: move value on Solana without broadcasting your financial life
         </div>
       </footer>
     </div>

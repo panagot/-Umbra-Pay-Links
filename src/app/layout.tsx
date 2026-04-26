@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Umbra Pay Links — private payments for people & agents",
   description:
-    "Shareable payment links with Umbra confidential settlement and an x402-style 402 API for AI agents — Solana financial privacy without a public payer graph.",
+    "Superteam Frontier / Umbra Side Track: shareable pay links with opaque ids, Umbra SDK receiver-claimable UTXO settlement, and an x402-shaped HTTP 402 resource for agents. OpenAPI, Playwright, and headless payer parity.",
 };
 
 export default function RootLayout({

@@ -62,7 +62,7 @@ export function PayWithUmbra({
   agentResourceUrl,
 }: {
   intent: IntentPayload;
-  /** Same intent’s 402 resource — shown after settlement for agent testing. */
+  /** Same intent’s 402 resource; shown after settlement for agent testing. */
   agentResourceUrl?: string;
 }) {
   const [wallet, setWallet] = useState<Wallet | null>(null);
@@ -139,7 +139,7 @@ export function PayWithUmbra({
         await register({ confidential: true, anonymous: true });
         append("Registered with Umbra.");
       } else {
-        append("Umbra account already exists — skipping registration.");
+        append("Umbra account already exists; skipping registration.");
       }
       setPayStep(2);
 
@@ -226,7 +226,7 @@ export function PayWithUmbra({
           Umbra · {network}
         </span>
         <span className="text-faint">
-          RPC + indexer from app env — proofs via{" "}
+          RPC + indexer from app env; proofs via{" "}
           <code className="text-muted">@umbra-privacy/web-zk-prover</code>
         </span>
       </div>
@@ -240,7 +240,7 @@ export function PayWithUmbra({
             content={
               <>
                 Tokens move into the mixer with a proof tied to the merchant&apos;s
-                keys. Claiming can land in an encrypted balance — not a trivial
+                keys. Claiming can land in an encrypted balance, not a trivial
                 public transfer row on an explorer.
               </>
             }
@@ -292,7 +292,7 @@ export function PayWithUmbra({
 
       {intent.status === "settled" && agentResourceUrl ? (
         <div className="rounded-xl border border-teal-muted/50 bg-teal-soft/35 p-4 text-sm shadow-sm">
-          <p className="font-semibold text-ink">Paid — agent URL returns 200</p>
+          <p className="font-semibold text-ink">Paid: agent URL returns 200</p>
           <p className="mt-1 text-xs leading-relaxed text-muted">
             Poll or GET once: unlocked JSON payload. Use the same URL you copied at intent
             creation.
@@ -303,12 +303,14 @@ export function PayWithUmbra({
             </code>
             <CopyButton text={agentResourceUrl} label="Copy" />
           </div>
-          <Link
-            href="/agents"
-            className="mt-3 inline-block text-xs font-medium text-teal hover:underline"
-          >
-            Agents &amp; APIs →
-          </Link>
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs font-medium text-teal">
+            <Link href="/agents" className="hover:underline">
+              Agents &amp; APIs →
+            </Link>
+            <Link href="/judges" className="hover:underline">
+              For reviewers →
+            </Link>
+          </div>
         </div>
       ) : null}
 

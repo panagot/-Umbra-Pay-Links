@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <ContentPageShell>
       <DocHero
-        eyebrow="Umbra · Private pay intents"
+        eyebrow="Superteam Frontier · Umbra Side Track"
         title={
           <>
             One link for people and{" "}
@@ -36,14 +36,16 @@ export default function Home() {
                 content={
                   <>
                     Agents call your resource URL. Until payment is recorded, the API
-                    returns status 402 with JSON describing how to pay — the same shape
+                    returns status 402 with JSON describing how to pay, matching the shape
                     many x402 clients already expect.
                   </>
                 }
               />
             </span>{" "}
-            resource. Settlement uses the Umbra SDK (receiver-claimable UTXO in this
-            build).
+            resource. After Umbra settlement, that URL returns 200 with structured{" "}
+            <code className="text-ink">content</code>. Settlement is the real Umbra SDK
+            (receiver-claimable UTXO from public USDC). OpenAPI, tests, and a headless payer
+            script ship in the repo.
           </>
         }
         actions={
@@ -53,6 +55,9 @@ export default function Home() {
             </Link>
             <Link href="/how-it-works" className={pillGhost}>
               How it works →
+            </Link>
+            <Link href="/judges" className={pillGhost}>
+              For reviewers →
             </Link>
           </div>
         }

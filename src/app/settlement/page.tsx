@@ -10,7 +10,7 @@ import {
 export const metadata: Metadata = {
   title: "Settlement · Umbra Pay Links",
   description:
-    "Exact Umbra SDK surface: receiver-claimable UTXO, ZK prover, confirm path, and production hardening.",
+    "Umbra SDK proof points for judges: getUmbraClient, receiver-claimable UTXO from public USDC, web ZK prover, confirm + optional on-chain verify.",
 };
 
 export default function SettlementPage() {
@@ -91,6 +91,29 @@ export default function SettlementPage() {
         </p>
       </DocSection>
 
+      <DocSection title="Reviewer checklist (2 minutes)">
+        <ul className="list-inside list-disc space-y-2 text-sm text-muted">
+          <li>
+            Confirm there is <strong className="text-ink">no SPL-only shortcut</strong> in
+            the pay UI: search the repo for{" "}
+            <code className="text-ink">getPublicBalanceToReceiverClaimableUtxoCreatorFunction</code>.
+          </li>
+          <li>
+            Compare browser checkout to{" "}
+            <code className="text-ink">scripts/agent-pay.mjs</code> (same functions, different
+            signer).
+          </li>
+          <li>
+            Read <code className="text-ink">extra.settlement</code> on the 402 response in{" "}
+            <code className="text-ink">src/app/api/resources/[id]/route.ts</code>.
+          </li>
+          <li>
+            Optional: enable <code>REQUIRE_ONCHAIN_CONFIRM_FOR_SETTLE</code> and re-run a pay
+            flow to see RPC-backed confirmation.
+          </li>
+        </ul>
+      </DocSection>
+
       <DocSection title="Where this could grow (Umbra roadmap)">
         <p>
           Umbra also supports <strong>viewing keys</strong>, selective disclosure, private
@@ -102,6 +125,10 @@ export default function SettlementPage() {
       </DocSection>
 
       <DocFooterNav>
+        <DocNavLink href="/judges">For reviewers</DocNavLink>
+        <span className="text-line-strong" aria-hidden>
+          ·
+        </span>
         <DocNavLink href="/agents">Agents &amp; APIs</DocNavLink>
         <span className="text-line-strong" aria-hidden>
           ·
